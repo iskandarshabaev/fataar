@@ -1,0 +1,4 @@
+<com.fataar.fixtures.resourcesfiles.FixtureBadge xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fixture_badge" android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="@dimen/fixture_padding" style="@style/FixtureLabel"
+    app:fixtureLabel="@string/fixture_title" app:fixtureEmphasis="true"/>

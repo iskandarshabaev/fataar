@@ -1,0 +1,9 @@
+<resources>
+    <string name="fixture_title">Полигон Fat AAR</string>
+    <plurals name="fixture_items">
+        <item quantity="one">%d элемент</item>
+        <item quantity="few">%d элемента</item>
+        <item quantity="many">%d элементов</item>
+        <item quantity="other">%d элемента</item>
+    </plurals>
+</resources>

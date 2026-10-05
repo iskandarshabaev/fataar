@@ -1,0 +1,30 @@
+package com.fataar.gradle
+
+/** Public NDK r25 library API bounds. Legacy entries at the NDK floor use a conservative lower bound. */
+internal val platformNativeLibraries = mapOf(
+    "libEGL.so" to 1,
+    "libGLESv1_CM.so" to 1,
+    "libGLESv2.so" to 1,
+    "libGLESv3.so" to 1,
+    "libOpenMAXAL.so" to 1,
+    "libOpenSLES.so" to 1,
+    "libaaudio.so" to 26,
+    "libamidi.so" to 29,
+    "libandroid.so" to 1,
+    "libbinder_ndk.so" to 29,
+    "libc.so" to 1,
+    "libcamera2ndk.so" to 24,
+    "libdl.so" to 1,
+    "libicu.so" to 31,
+    "libjnigraphics.so" to 1,
+    "liblog.so" to 1,
+    "libm.so" to 1,
+    "libmediandk.so" to 21,
+    "libnativehelper.so" to 31,
+    "libnativewindow.so" to 26,
+    "libneuralnetworks.so" to 27,
+    "libstdc++.so" to 1,
+    "libsync.so" to 26,
+    "libvulkan.so" to 24,
+    "libz.so" to 1,
+)

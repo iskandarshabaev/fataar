@@ -1,0 +1,5 @@
+plugins { id 'java-platform'; id 'maven-publish' }
+javaPlatform { allowDependencies() }
+dependencies { api platform(project(':family-bom')) }
+publishing { publications { platform(MavenPublication) { from components.javaPlatform } }
+ repositories { maven { name = 'Family'; url = rootProject.layout.buildDirectory.dir('family-repository') } } }

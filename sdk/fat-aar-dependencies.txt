@@ -1,0 +1,4 @@
+# Explicit fat-AAR dependency declarations.
+embed project :fixtures:dependency-leaf
+embed project :fixtures:dependency-left
+embed project :fixtures:dependency-right

@@ -1,0 +1,21 @@
+// Validate real generated native archives after changing only private test copies.
+gradle.beforeProject { project ->
+    if (project.path == ':sdk') {
+        project.pluginManager.withPlugin('com.fataar') {
+            def loader = project.plugins.findPlugin('com.fataar').class.classLoader
+            def taskType = loader.loadClass('com.fataar.gradle.MergeAarTask')
+            def inputType = loader.loadClass('com.fataar.gradle.MergeInput')
+            def additional = project.providers.gradleProperty('test.additionalInput')
+            def inputs = additional.isPresent() ? [inputType.getConstructor(String, File).newInstance('test-extra', project.file(additional.get()))] : []
+            project.tasks.register('probeNativeAar', taskType) {
+                it.inputAar.set(project.file(project.providers.gradleProperty('test.nativeInput').get()))
+                it.embedded.set(inputs)
+                it.expectedOwners.set(inputs.collect { input -> input.owner })
+                it.nativeAbis.set(['armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'])
+                it.prefabPackageName.set('sdk')
+                it.outputAar.set(project.layout.buildDirectory.file('native-probe/sdk.aar'))
+                it.reportFile.set(project.layout.buildDirectory.file('native-probe/report.txt'))
+            }
+        }
+    }
+}

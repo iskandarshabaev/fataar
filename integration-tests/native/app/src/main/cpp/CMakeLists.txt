@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(native_consumer LANGUAGES C)
+find_package(sdk REQUIRED CONFIG)
+add_library(fataar_consumer SHARED consumer.c)
+target_link_libraries(fataar_consumer PRIVATE sdk::fataar_bridge sdk::fataar_registered sdk::fataar_host sdk::fataar_static)
+target_link_options(fataar_consumer PRIVATE "-Wl,-z,max-page-size=16384")

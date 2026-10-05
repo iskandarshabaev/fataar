@@ -1,0 +1,13 @@
+<resources>
+    <string name="fixture_title">Fat AAR playground</string>
+    <string name="fixture_dynamic_name">resolved-by-name</string>
+    <plurals name="fixture_items"><item quantity="one">%d item</item><item quantity="other">%d items</item></plurals>
+    <string-array name="fixture_labels"><item>alpha</item><item>beta</item></string-array>
+    <integer name="fixture_answer">42</integer>
+    <bool name="fixture_enabled">true</bool>
+    <dimen name="fixture_padding">12dp</dimen>
+    <color name="fixture_accent">#00695C</color>
+    <style name="FixtureLabel"><item name="android:textColor">@color/fixture_accent</item><item name="android:textSize">18sp</item></style>
+    <declare-styleable name="FixtureBadge"><attr name="fixtureLabel" format="string"/><attr name="fixtureEmphasis" format="boolean"/></declare-styleable>
+    <item name="fixture_tag" type="id"/>
+</resources>

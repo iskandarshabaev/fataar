@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(native_registered LANGUAGES C)
+add_library(fataar_registered SHARED native.c)
+target_include_directories(fataar_registered PUBLIC include)
+target_link_options(fataar_registered PRIVATE "-Wl,-z,max-page-size=16384")

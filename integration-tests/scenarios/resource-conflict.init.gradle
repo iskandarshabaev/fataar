@@ -1,0 +1,8 @@
+// Add a real colliding Android resource to an embedded module, without editing its sources.
+gradle.beforeProject { project ->
+    if (project.path == ':fixtures:assets') {
+        project.pluginManager.withPlugin('com.android.library') {
+            project.android.sourceSets.main.res.srcDir(new File(project.rootDir, 'build/resource-conflict-fixture'))
+        }
+    }
+}

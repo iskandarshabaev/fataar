@@ -1,0 +1,7 @@
+gradle.beforeProject { project ->
+    if (project.path == ':fixtures:manifest-components') {
+        project.pluginManager.withPlugin('com.android.library') {
+            project.androidComponents.finalizeDsl { dsl -> dsl.defaultConfig.minSdk = 25 }
+        }
+    }
+}

@@ -1,0 +1,3 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"><data><variable name="rightTitle" type="String"/><variable name="rightCount" type="int"/></data>
+<TextView android:id="@+id/fixture_data_right_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@{rightTitle + `:` + rightCount}"/>
+</layout>

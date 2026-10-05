@@ -1,0 +1,61 @@
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
+import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.MapProperty
+import org.gradle.api.tasks.*
+import java.util.zip.*
+
+// AGP's Prefab DSL exports binaries/headers but does not expose export_libraries.
+// This producer task declares genuine Prefab link requirements through public AAR APIs.
+@CacheableTask
+abstract class DeclarePrefabExports extends DefaultTask {
+    @InputFile @PathSensitive(PathSensitivity.NONE) abstract RegularFileProperty getInputAar()
+    @OutputFile abstract RegularFileProperty getOutputAar()
+    @Input abstract ListProperty<String> getPackages()
+    @Input abstract MapProperty<String, List<String>> getLibraries()
+    @Input abstract ListProperty<String> getHeaderOnlyModules()
+    @TaskAction void declare() {
+        def entries = new TreeMap<String, byte[]>()
+        new ZipInputStream(new ByteArrayInputStream(inputAar.get().asFile.bytes)).withCloseable { zip ->
+            for (def entry = zip.nextEntry; entry != null; entry = zip.nextEntry) {
+                if (!entry.directory) entries[entry.name] = zip.readAllBytes()
+            }
+        }
+        def parser = new JsonSlurper()
+        def pkg = parser.parse(entries['prefab/prefab.json'])
+        pkg.dependencies = packages.get()
+        entries['prefab/prefab.json'] = JsonOutput.toJson(pkg).getBytes('UTF-8')
+        libraries.get().each { module, exports ->
+            def path = "prefab/modules/$module/module.json"
+            def metadata = parser.parse(entries[path])
+            metadata.export_libraries = exports
+            entries[path] = JsonOutput.toJson(metadata).getBytes('UTF-8')
+        }
+        // AGP 9.4 requires a CMake target even with headerOnly=true and packages
+        // its anchor archive. Expose the standard Prefab header-only contract.
+        headerOnlyModules.get().each { module ->
+            entries.keySet().removeIf { it.startsWith("prefab/modules/$module/libs/") }
+        }
+        def output = outputAar.get().asFile; output.parentFile.mkdirs()
+        new ZipOutputStream(new FileOutputStream(output)).withCloseable { zip ->
+            entries.each { name, bytes ->
+                def entry = new ZipEntry(name); entry.time = 315532800000L
+                zip.putNextEntry(entry); zip.write(bytes); zip.closeEntry()
+            }
+        }
+    }
+}
+
+def components = extensions.getByName('androidComponents')
+def aarType = components.class.classLoader.loadClass('com.android.build.api.artifact.SingleArtifact$AAR').getField('INSTANCE').get(null)
+def moduleName = project.name
+components.onVariants(components.selector().all(), { variant ->
+    def suffix = variant.name.capitalize()
+    def transform = tasks.register("declare${suffix}PrefabExports", DeclarePrefabExports) {
+        packages.set(moduleName == 'native-bridge' ? ['native-base'] : [])
+        libraries.set(moduleName == 'native-bridge' ? ['fataar_bridge': ['//native-base:fataar_math']] : ['fataar_math': [':fataar_headers']])
+        headerOnlyModules.set(moduleName == 'native-base' ? ['fataar_headers'] : [])
+    }
+    variant.artifacts.use(transform).wiredWithFiles({ it.inputAar }, { it.outputAar }).toTransform(aarType)
+})

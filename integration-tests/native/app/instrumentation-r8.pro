@@ -1,0 +1,3 @@
+-keep class com.fataar.nativeplayground.consumer.NativeSmokeTest { *; }
+-keepattributes *Annotation*
+-dontwarn javax.lang.model.element.Modifier

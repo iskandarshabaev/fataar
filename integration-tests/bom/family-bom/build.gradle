@@ -1,0 +1,8 @@
+plugins { id 'java-platform'; id 'maven-publish' }
+dependencies { constraints {
+ api 'com.fataar.bomfixture:api-lib:2'
+ api 'com.fataar.bomfixture:engine-lib:2'
+ api 'com.fataar.bomfixture:embedded-bundle:2'
+} }
+publishing { publications { platform(MavenPublication) { from components.javaPlatform } }
+ repositories { maven { name = 'Family'; url = rootProject.layout.buildDirectory.dir('family-repository') } } }

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This module exposes a string resolved by name; carry the shrinking contract with the library. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/fixture_dynamic_name" />

@@ -1,0 +1,4 @@
+-keep class com.fataar.variants.sdk.VariantFacade { public *; }
+-keep class androidx.tracing.** { *; }
+-keep class kotlin.** { *; }
+-keep class kotlinx.coroutines.** { *; }

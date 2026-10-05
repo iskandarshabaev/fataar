@@ -1,0 +1,1 @@
+-keepclasseswithmembernames,includedescriptorclasses class com.fataar.nativeplayground.sdk.NativeSdk { native <methods>; }

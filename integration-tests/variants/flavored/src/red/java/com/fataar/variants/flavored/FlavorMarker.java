@@ -1,0 +1,1 @@
+package com.fataar.variants.flavored; import com.fataar.variants.redleaf.RedLeafMarker; public final class FlavorMarker { public static String text() { return "flavor-red:" + BuildConfig.BUILD_TYPE + ":" + RedLeafMarker.text(); } }

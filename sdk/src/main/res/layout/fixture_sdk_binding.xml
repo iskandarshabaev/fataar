@@ -1,0 +1,3 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"><data><variable name="sdkText" type="String"/></data>
+<TextView android:id="@+id/fixture_sdk_bound_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@{sdkText}"/>
+</layout>

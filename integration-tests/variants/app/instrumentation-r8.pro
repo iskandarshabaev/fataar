@@ -1,0 +1,3 @@
+-dontwarn javax.lang.model.element.Modifier
+-keep class com.fataar.variants.test.VariantSmokeTest { *; }
+-keepattributes *Annotation*

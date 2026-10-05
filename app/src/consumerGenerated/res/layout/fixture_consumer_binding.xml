@@ -1,0 +1,8 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"><data class="com.fataar.consumerprobe.ConsumerBinding">
+<variable name="consumerModel" type="androidx.databinding.ObservableField&lt;String&gt;"/>
+<variable name="consumerTitle" type="String"/><variable name="consumerCount" type="int"/>
+</data><LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="wrap_content">
+<include android:id="@+id/consumer_left" layout="@layout/fixture_data_binding_left" app:leftModel="@{consumerModel}"/>
+<include android:id="@+id/consumer_right" layout="@layout/fixture_data_binding_right" app:rightTitle="@{consumerTitle}" app:rightCount="@{consumerCount}"/>
+<TextView android:id="@+id/consumer_adapter" android:layout_width="wrap_content" android:layout_height="wrap_content" app:fixtureBindingSuffix="@{consumerTitle}"/>
+</LinearLayout></layout>

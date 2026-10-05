@@ -1,0 +1,10 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.VIBRATE" tools:node="remove"/>
+    <queries><provider android:authorities="${applicationId}.fixture"/></queries>
+    <application>
+        <meta-data android:name="com.fataar.sdk.stage" android:value="merged-sdk"/>
+        <meta-data android:name="com.fataar.fixture.override" android:value="sdk-value" tools:replace="android:value"/>
+        <meta-data android:name="com.fataar.fixture.removed" tools:node="remove"/>
+    </application>
+</manifest>

@@ -1,0 +1,30 @@
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+**/build/
+/.playground-repository/
+.kotlin/
+__pycache__/
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# Machine-specific IDE settings and signing material.
+/.idea/
+*.jks
+*.keystore
+*.asc
+*.hprof
+
+# Keep the prepared CI template inactive until CI is explicitly enabled.
+/.github/workflows/*.yml
+/.github/workflows/*.yaml

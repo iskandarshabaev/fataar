@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.VIBRATE"/>
+    <application>
+        <activity android:name=".FixtureActivity" android:exported="false"/>
+        <service android:name=".FixtureService" android:exported="false"/>
+        <receiver android:name=".FixtureReceiver" android:exported="false"><intent-filter><action android:name="com.fataar.FIXTURE"/></intent-filter></receiver>
+        <provider android:name=".FixtureProvider" android:authorities="${applicationId}.fixture" android:exported="false"/>
+        <meta-data android:name="com.fataar.fixture" android:value="manifest-present"/>
+        <meta-data android:name="com.fataar.fixture.override" android:value="embedded-value"/>
+        <meta-data android:name="com.fataar.fixture.removed" android:value="must-disappear"/>
+        <meta-data android:name="com.fataar.fixture.channel" android:value="${fataarChannel}"/>
+    </application>
+</manifest>

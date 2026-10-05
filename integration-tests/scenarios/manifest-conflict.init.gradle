@@ -1,0 +1,9 @@
+// Use a real generated Manifest as the main Manifest of the embedded assets module.
+gradle.beforeProject { project ->
+    if (project.path == ':fixtures:assets') {
+        project.pluginManager.withPlugin('com.android.library') {
+            def scenario = project.providers.gradleProperty('fatAar.manifestScenario').get()
+            project.android.sourceSets.main.manifest.srcFile(new File(project.rootDir, "build/manifest-fixtures/${scenario}.xml"))
+        }
+    }
+}

@@ -1,0 +1,21 @@
+// Re-run the merger on a genuinely generated SDK and a deliberately damaged
+// external AAR, without allowing javac/AAPT to reject the fixture first.
+gradle.beforeProject { project ->
+    if (project.path == ':sdk') {
+        project.pluginManager.withPlugin('com.fataar') {
+            def loader = project.plugins.findPlugin('com.fataar').class.classLoader
+            def taskType = loader.loadClass('com.fataar.gradle.MergeAarTask')
+            def inputType = loader.loadClass('com.fataar.gradle.MergeInput')
+            def input = inputType.getConstructor(String, File).newInstance('module:com.fataar.external:binding-library',
+                project.file(project.providers.gradleProperty('test.externalInput').get()))
+            project.tasks.register('probeExternalBindingAar', taskType) {
+                it.inputAar.set(project.rootProject.layout.buildDirectory.file('sdk-repository/com/fataar/externaltest/sdk/1/sdk-1.aar'))
+                it.embedded.set([])
+                it.expectedOwners.set([])
+                it.externalApi.set([input])
+                it.outputAar.set(project.layout.buildDirectory.file('external-probe/sdk.aar'))
+                it.reportFile.set(project.layout.buildDirectory.file('external-probe/report.txt'))
+            }
+        }
+    }
+}

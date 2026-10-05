@@ -1,0 +1,119 @@
+name: SDK validation
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 3 * * 1'
+permissions:
+  contents: read
+concurrency:
+  group: sdk-validation-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  compatibility:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        gradle: ['9.6.0', '9.8.0']
+        java: ['17', '21']
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          set-default: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Register installed JDK 17 toolchain
+        run: |
+          mkdir -p "${GRADLE_USER_HOME:-$HOME/.gradle}"
+          printf '\norg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_17_ARM64\n' >> "${GRADLE_USER_HOME:-$HOME/.gradle}/gradle.properties"
+      - name: Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: Build and consume SDK
+        run: python3 scripts/verify-compatibility.py --gradle-version '${{ matrix.gradle }}' --expected-jdk '${{ matrix.java }}'
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: compatibility-${{ matrix.gradle }}-jdk${{ matrix.java }}
+          path: build/reports/compatibility-validation
+  full:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          set-default: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Register installed JDK 17 toolchain
+        run: |
+          mkdir -p "${GRADLE_USER_HOME:-$HOME/.gradle}"
+          printf '\norg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_17_ARM64\n' >> "${GRADLE_USER_HOME:-$HOME/.gradle}/gradle.properties"
+      - name: Android SDK and emulator
+        run: |
+          sdkmanager 'platforms;android-36' 'build-tools;36.0.0' 'ndk;25.1.8937393' 'cmake;3.22.1' 'system-images;android-35;google_apis;x86_64' 'emulator' 'platform-tools'
+          printf 'no\n' | avdmanager create avd --name Fataar_API_35 --package 'system-images;android-35;google_apis;x86_64'
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Artifacts, signatures, metadata and device tests
+        run: python3 scripts/verify-all.py --avd Fataar_API_35
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: full-validation
+          path: |
+            build/reports
+            plugin-build/build/test-results
+            plugin-build/build/reports/tests
+          retention-days: 14
+  scale:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+          set-default: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: gradle/actions/setup-gradle@v6
+      - name: Register installed JDK 17 toolchain
+        run: |
+          mkdir -p "${GRADLE_USER_HOME:-$HOME/.gradle}"
+          printf '\norg.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_17_ARM64\n' >> "${GRADLE_USER_HOME:-$HOME/.gradle}/gradle.properties"
+      - name: Android SDK
+        run: sdkmanager 'platforms;android-36' 'build-tools;36.0.0'
+      - name: 50, 100 and 200 module artifact checks and profiles
+        run: python3 scripts/verify-scale.py
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: scale-validation
+          path: build/reports/scale-validation
+          retention-days: 14

@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(sdk LANGUAGES C)
+add_library(fataar_host SHARED native.c)
+target_include_directories(fataar_host PUBLIC include)
+target_link_options(fataar_host PRIVATE "-Wl,-z,max-page-size=16384")
+find_package(native-base REQUIRED CONFIG)
+target_link_libraries(fataar_host PRIVATE native-base::fataar_math)

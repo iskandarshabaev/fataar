@@ -1,0 +1,7 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data><variable name="consumerTitle" type="String" /></data>
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+        <TextView android:id="@+id/consumer_text" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@{consumerTitle}" />
+        <include android:id="@+id/external_included" layout="@layout/external_binding" app:externalTitle="@{consumerTitle}" /><include android:id="@+id/embedded_included" layout="@layout/embedded_binding" app:embeddedTitle="@{consumerTitle}" />
+    </LinearLayout>
+</layout>

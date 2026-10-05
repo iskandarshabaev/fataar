@@ -1,0 +1,1 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"><item android:id="@+id/fixture_action" android:title="@string/fixture_title" android:icon="@drawable/fixture_vector"/></menu>
